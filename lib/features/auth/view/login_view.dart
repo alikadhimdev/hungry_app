@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:hungry_app/core/constants/app_colors.dart';
+import 'package:hungry_app/features/auth/widgets/custom_button.dart';
 import 'package:hungry_app/shared/custom_text.dart';
 import 'package:hungry_app/shared/custom_text_field.dart';
 
@@ -12,7 +13,7 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordCOntroller = TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return GestureDetector(
       // to hide the keyboard when click out the text field
@@ -23,7 +24,7 @@ class LoginView extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Form(
-              key: _formKey,
+              key: formKey,
               child: Column(
                 children: [
                   Gap(40),
@@ -48,28 +49,7 @@ class LoginView extends StatelessWidget {
                     controller: passwordCOntroller,
                   ),
                   Gap(40),
-                  GestureDetector(
-                    onTap: () {
-                      if (_formKey.currentState!.validate())
-                        print("success login");
-                    },
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: (CustomText(
-                          text: "Login",
-                          weight: FontWeight.w700,
-                          color: AppColors.primary,
-                          size: 18,
-                        )),
-                      ),
-                    ),
-                  ),
+                  CustomAuthButton(text: "Sign In"),
                 ],
               ),
             ),
