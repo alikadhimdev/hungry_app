@@ -22,54 +22,57 @@ class _SignupViewState extends State<SignupView> {
     TextEditingController confirmPasswordController = TextEditingController();
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-    return Scaffold(
-      backgroundColor: AppColors.primary,
-      body: Center(
-        child: Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Gap(40),
-                SvgPicture.asset("assets/logo/logo.svg"),
-                Gap(10),
-                CustomText(text: "Create your Account", color: Colors.white),
-                Gap(30),
-                CustomTextField(
-                  hint: "Username",
-                  isPassword: false,
-                  controller: usernameController,
-                ),
-                Gap(10),
-                CustomTextField(
-                  hint: "Email",
-                  isPassword: false,
-                  controller: emailController,
-                ),
-                Gap(10),
-                CustomTextField(
-                  hint: "Password",
-                  isPassword: true,
-                  controller: passwordController,
-                ),
-                Gap(10),
-                CustomTextField(
-                  hint: "Confirm Password",
-                  isPassword: true,
-                  controller: confirmPasswordController,
-                ),
-                Gap(30),
-                CustomAuthButton(
-                  text: "Sign Up",
-                  onTap: () {
-                    if (formKey.currentState!.validate()) {
-                      print("sign up success");
-                    }
-                  },
-                ),
-              ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: AppColors.primary,
+        body: Center(
+          child: Padding(
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Gap(40),
+                  SvgPicture.asset("assets/logo/logo.svg"),
+                  Gap(10),
+                  CustomText(text: "Create your Account", color: Colors.white),
+                  Gap(30),
+                  CustomTextField(
+                    hint: "Username",
+                    isPassword: false,
+                    controller: usernameController,
+                  ),
+                  Gap(10),
+                  CustomTextField(
+                    hint: "Email",
+                    isPassword: false,
+                    controller: emailController,
+                  ),
+                  Gap(10),
+                  CustomTextField(
+                    hint: "Password",
+                    isPassword: true,
+                    controller: passwordController,
+                  ),
+                  Gap(10),
+                  CustomTextField(
+                    hint: "Confirm Password",
+                    isPassword: true,
+                    controller: confirmPasswordController,
+                  ),
+                  Gap(30),
+                  CustomAuthButton(
+                    text: "Sign Up",
+                    onTap: () {
+                      if (formKey.currentState!.validate()) {
+                        print("sign up success");
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

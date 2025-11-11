@@ -29,7 +29,7 @@ class CustomAuthButton extends StatelessWidget {
         ),
         child: Center(
           child: CustomText(
-            text: "Sign Up",
+            text: text,
             weight: FontWeight.w700,
             size: 18,
             color: AppColors.primary,

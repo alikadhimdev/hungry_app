@@ -12,7 +12,7 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
-    TextEditingController passwordCOntroller = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return GestureDetector(
@@ -46,10 +46,17 @@ class LoginView extends StatelessWidget {
                   CustomTextField(
                     hint: "Password",
                     isPassword: true,
-                    controller: passwordCOntroller,
+                    controller: passwordController,
                   ),
                   Gap(40),
-                  CustomAuthButton(text: "Sign In"),
+                  CustomAuthButton(
+                    text: "Sign In",
+                    onTap: () {
+                      if (formKey.currentState!.validate()) {
+                        print("sign in success");
+                      }
+                    },
+                  ),
                 ],
               ),
             ),

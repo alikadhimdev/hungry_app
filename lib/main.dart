@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hungry_app/core/constants/app_colors.dart';
-import 'package:hungry_app/features/auth/view/login_view.dart';
-import 'package:hungry_app/features/auth/view/signup_view.dart';
+import 'package:hungry_app/root.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'HUNGRY APP',
 
-      home: Scaffold(backgroundColor: AppColors.primary, body: SignupView()),
+      home: RootView(),
     );
   }
 }
