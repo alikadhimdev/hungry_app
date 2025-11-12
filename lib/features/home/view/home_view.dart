@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:hungry_app/features/home/widgets/cart_item.dart';
 import 'package:hungry_app/features/home/widgets/category_item.dart';
 import 'package:hungry_app/features/home/widgets/search_bar.dart';
 import 'package:hungry_app/features/home/widgets/user_header.dart';
 
 class Item {
+  int id;
   String title, des, rate, imgUrl;
   Item({
+    required this.id,
     required this.title,
     required this.des,
     required this.rate,
@@ -16,6 +17,7 @@ class Item {
 
   factory Item.fromMap(Map<String, dynamic> map) {
     return Item(
+      id: map["id"],
       title: map["title"],
       des: map["des"],
       rate: map["rate"],
@@ -37,42 +39,60 @@ class _HomeViewState extends State<HomeView> {
 
   List<Item> items = [
     Item(
+      id: 1,
       title: "Cheeseburger",
       des: "Wendy's Burger",
       rate: "4.9",
       imgUrl: "assets/test/test.png",
     ),
     Item(
+      id: 2,
       title: "Hamburger",
       des: "Veggie Burger",
       rate: "4.5",
       imgUrl: "assets/test/test1.png",
     ),
     Item(
+      id: 3,
       title: "Cheeseburger",
       des: "Chicken Burger",
       rate: "4.7",
       imgUrl: "assets/test/test1.png",
     ),
     Item(
+      id: 4,
       title: "Hamburger",
       des: "Fried Chicken Burger",
       rate: "4.0",
       imgUrl: "assets/test/test.png",
     ),
     Item(
+      id: 5,
       title: "Cheeseburger",
       des: "Wendy's Burger",
       rate: "4.9",
       imgUrl: "assets/test/test.png",
     ),
     Item(
+      id: 6,
       title: "Cheeseburger",
       des: "Wendy's Burger",
       rate: "4.9",
       imgUrl: "assets/test/test.png",
     ),
   ];
+
+  Set<int> favoriteItems = {};
+
+  void toggleFavorite(int itemId) {
+    setState(() {
+      if (favoriteItems.contains(itemId)) {
+        favoriteItems.remove(itemId);
+      } else {
+        favoriteItems.add(itemId);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,14 +131,15 @@ class _HomeViewState extends State<HomeView> {
                     delegate: SliverChildBuilderDelegate(
                       childCount: items.length,
                       (context, index) {
-                        return GestureDetector(
-                          onTap: () {},
-                          child: CartItem(
-                            title: items[index].title,
-                            des: items[index].des,
-                            rate: items[index].rate,
-                            imgUrl: items[index].imgUrl,
-                          ),
+                        return CartItem(
+                          title: items[index].title,
+                          des: items[index].des,
+                          rate: items[index].rate,
+                          imgUrl: items[index].imgUrl,
+                          isLike: favoriteItems.contains(items[index].id),
+                          onFavorite: () {
+                            toggleFavorite(items[index].id);
+                          },
                         );
                       },
                     ),
