@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:hungry_app/core/constants/app_colors.dart';
-import 'package:hungry_app/features/product/widgets/additional_card.dart';
-import 'package:hungry_app/shared/Custom_bottom.dart';
-import 'package:hungry_app/shared/custom_text.dart';
+import '../../../shared/Custom_bottom.dart';
+import '../../../shared/custom_text.dart';
+import '../widgets/additional_card.dart';
 import '../widgets/spice_slider.dart';
 
 class ProductAdds {
