@@ -112,7 +112,7 @@ class _HomeViewState extends State<HomeView> {
                   elevation: 0,
                   pinned: true,
                   shadowColor: Colors.black,
-                  toolbarHeight: 135,
+                  toolbarHeight: 140,
                   scrolledUnderElevation: 0,
                   flexibleSpace: Column(
                     children: [UserHeader(), SearchBarHome()],

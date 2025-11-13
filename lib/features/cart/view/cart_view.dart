@@ -3,29 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../shared/Custom_bottom.dart';
 import '../../../shared/custom_text.dart';
 import '../widgets/Cart_item.dart';
-
-class ItemCard {
-  String img, title, des;
-  int id, count;
-
-  ItemCard({
-    required this.img,
-    required this.title,
-    required this.des,
-    required this.id,
-    required this.count,
-  });
-
-  factory ItemCard.fromMap(Map<String, dynamic> map) {
-    return ItemCard(
-      img: map["img"],
-      title: map["title"],
-      des: map["des"],
-      id: map["id"],
-      count: map["count"],
-    );
-  }
-}
+import '../data/items_data.dart';
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -35,51 +13,6 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
-  List<ItemCard> items = [
-    ItemCard(
-      img: "assets/test/test.png",
-      title: "Hamburger",
-      des: "Veggle Burger",
-      id: 1,
-      count: 1,
-    ),
-    ItemCard(
-      img: "assets/test/test.png",
-      title: "Hamburger",
-      des: "Veggle Burger",
-      id: 1,
-      count: 1,
-    ),
-    ItemCard(
-      img: "assets/test/test.png",
-      title: "Hamburger",
-      des: "Veggle Burger",
-      id: 1,
-      count: 1,
-    ),
-    ItemCard(
-      img: "assets/test/test.png",
-      title: "Hamburger",
-      des: "Veggle Burger",
-      id: 1,
-      count: 1,
-    ),
-    ItemCard(
-      img: "assets/test/test.png",
-      title: "Hamburger",
-      des: "Veggle Burger",
-      id: 1,
-      count: 1,
-    ),
-    ItemCard(
-      img: "assets/test/test.png",
-      title: "Hamburger",
-      des: "Veggle Burger",
-      id: 1,
-      count: 1,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,13 +40,23 @@ class _CartViewState extends State<CartView> {
                   items[index].count--;
                 }
               }),
+              onRemove: () => setState(() {
+                items.removeAt(index);
+              }),
             );
           },
         ),
       ),
 
       bottomSheet: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+        ),
+
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
         height: 90,
         child: Row(
@@ -126,7 +69,7 @@ class _CartViewState extends State<CartView> {
               ],
             ),
             Spacer(),
-            CustomBottom(text: "Checkout", hPadding: 30, vPadding: 15),
+            CustomBottom(text: "Checkout", height: 50),
           ],
         ),
       ),
