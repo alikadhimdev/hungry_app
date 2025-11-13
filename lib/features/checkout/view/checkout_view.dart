@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:hungry_app/features/checkout/widgets/success_widget.dart';
 
 import '../../../core/constants/app_colors.dart';
 import "../../../shared/Custom_bottom.dart";
@@ -144,10 +145,14 @@ class _CheckoutViewState extends State<CheckoutView> {
             ),
             Spacer(),
             GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CheckoutView()),
-              ),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (v) {
+                    return SuccessWidget();
+                  },
+                );
+              },
               child: CustomBottom(text: "Pay Now", height: 50),
             ),
           ],
