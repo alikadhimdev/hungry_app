@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../shared/Custom_bottom.dart';
 import '../../../shared/custom_text.dart';
+import '../../checkout/view/checkout_view.dart';
 import '../widgets/Cart_item.dart';
 import '../data/items_data.dart';
 
@@ -69,7 +70,13 @@ class _CartViewState extends State<CartView> {
               ],
             ),
             Spacer(),
-            CustomBottom(text: "Checkout", height: 50),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CheckoutView()),
+              ),
+              child: CustomBottom(text: "Checkout", height: 50),
+            ),
           ],
         ),
       ),
