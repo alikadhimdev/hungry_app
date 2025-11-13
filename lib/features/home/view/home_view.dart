@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hungry_app/features/home/widgets/cart_item.dart';
-import 'package:hungry_app/features/home/widgets/category_item.dart';
-import 'package:hungry_app/features/home/widgets/search_bar.dart';
-import 'package:hungry_app/features/home/widgets/user_header.dart';
+
+import '../../product/view/product_view.dart';
+import '../widgets/cart_item.dart';
+import '../widgets/category_item.dart';
+import '../widgets/search_bar.dart';
+import '../widgets/user_header.dart';
 
 class Item {
   int id;
@@ -131,15 +133,21 @@ class _HomeViewState extends State<HomeView> {
                     delegate: SliverChildBuilderDelegate(
                       childCount: items.length,
                       (context, index) {
-                        return CartItem(
-                          title: items[index].title,
-                          des: items[index].des,
-                          rate: items[index].rate,
-                          imgUrl: items[index].imgUrl,
-                          isLike: favoriteItems.contains(items[index].id),
-                          onFavorite: () {
-                            toggleFavorite(items[index].id);
-                          },
+                        return GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (c) => ProductView()),
+                          ),
+                          child: CartItem(
+                            title: items[index].title,
+                            des: items[index].des,
+                            rate: items[index].rate,
+                            imgUrl: items[index].imgUrl,
+                            isLike: favoriteItems.contains(items[index].id),
+                            onFavorite: () {
+                              toggleFavorite(items[index].id);
+                            },
+                          ),
                         );
                       },
                     ),
