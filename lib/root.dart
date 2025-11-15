@@ -48,36 +48,34 @@ class _RootViewState extends State<RootView> {
         onPageChanged: (v) => setState(() => currentScreen = v),
       ),
 
-      bottomNavigationBar: currentScreen == 3
-          ? null
-          : Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(vertical: 10),
 
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-              ),
-              child: BottomNavigationBar(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                type: BottomNavigationBarType.fixed,
-                selectedItemColor: Colors.white,
-                selectedFontSize: 12,
-                unselectedItemColor: Colors.grey.shade400,
-                unselectedFontSize: 12,
-                showSelectedLabels: true,
-                showUnselectedLabels: false,
-                currentIndex: currentScreen,
-                onTap: (value) {
-                  setState(() => currentScreen = value);
-                  _controller.jumpToPage(currentScreen);
-                },
-                items: screenIcons,
-              ),
-            ),
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+        ),
+        child: BottomNavigationBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.white,
+          selectedFontSize: 12,
+          unselectedItemColor: Colors.grey.shade400,
+          unselectedFontSize: 12,
+          showSelectedLabels: true,
+          showUnselectedLabels: false,
+          currentIndex: currentScreen,
+          onTap: (value) {
+            setState(() => currentScreen = value);
+            _controller.jumpToPage(currentScreen);
+          },
+          items: screenIcons,
+        ),
+      ),
     );
   }
 }

@@ -9,10 +9,12 @@ class CustomAuthButton extends StatelessWidget {
     this.color,
     this.size,
     this.onTap,
+    this.textColor,
   });
 
   final String text;
   final Color? color;
+  final Color? textColor;
   final double? size;
   final Function()? onTap;
 
@@ -24,15 +26,16 @@ class CustomAuthButton extends StatelessWidget {
         width: double.infinity,
         height: 50,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: color ?? Colors.white,
           borderRadius: BorderRadius.circular(7),
+          border: Border.all(color: textColor ?? AppColors.primary, width: 1),
         ),
         child: Center(
           child: CustomText(
             text: text,
             weight: FontWeight.w700,
             size: 18,
-            color: AppColors.primary,
+            color: textColor ?? AppColors.primary,
           ),
         ),
       ),

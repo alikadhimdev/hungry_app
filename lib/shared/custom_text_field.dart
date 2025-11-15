@@ -8,10 +8,14 @@ class CustomTextField extends StatefulWidget {
     required this.hint,
     required this.isPassword,
     required this.controller,
+    this.textColor,
+    this.borderCOlor,
   });
   final String hint;
   final bool isPassword;
   final TextEditingController controller;
+  final Color? textColor;
+  final Color? borderCOlor;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -54,7 +58,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           borderSide: BorderSide(color: Colors.white),
         ),
         hint: Text(widget.hint),
-        fillColor: Colors.white,
+        fillColor: widget.borderCOlor ?? Colors.white,
         filled: true,
         suffixIcon: widget.isPassword
             ? GestureDetector(
