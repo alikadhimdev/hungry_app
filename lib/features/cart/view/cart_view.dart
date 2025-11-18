@@ -71,7 +71,7 @@ class _CartViewState extends State<CartView> {
             ),
             Spacer(),
             GestureDetector(
-              onTap: () => Navigator.push(
+              onTap: () => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => CheckoutView()),
               ),

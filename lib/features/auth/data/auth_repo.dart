@@ -43,6 +43,36 @@ class AuthRepo {
   }
   // register
 
+  Future<UserModel?> register(
+    String name,
+    String email,
+    String password,
+    String confirmPassword,
+  ) async {
+    try {
+      final response = await apiService.post("/auth/register", {
+        "name": name,
+        "email": email,
+        "password": password,
+        "confirmPassword": confirmPassword,
+      });
+
+      if (response is ApiError) {
+        throw response;
+      }
+
+      final user = UserModel.fromJson(response["data"]);
+
+      if (user.token != null || user.token != "") {
+        await PrefHelper.saveToken(user.token!);
+      }
+
+      return user;
+    } catch (e) {
+      throw ApiError(message: e.toString());
+    }
+  }
+
   // get profile
 
   // update profile

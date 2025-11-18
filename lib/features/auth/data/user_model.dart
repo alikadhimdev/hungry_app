@@ -29,7 +29,7 @@ class UserModel {
       email: json["email"] ?? "Unknown email",
       password: json["password"] ?? "Unknown password",
       image: json["image"] ?? "Unknown image",
-      token: json["token"] ?? "Unknown token",
+      token: json["accessToken"] ?? "Unknown token",
       confirmPassword: json["confirmPassword"] ?? "Unknown confirmPassword",
       phone: json["phone"] ?? "Unknown phone",
       visa: json["visa"] ?? "Unknown visa",

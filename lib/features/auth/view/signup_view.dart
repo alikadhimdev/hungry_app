@@ -1,9 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:hungry_app/core/constants/app_colors.dart';
+import 'package:hungry_app/core/network/api_error.dart';
+import 'package:hungry_app/features/auth/data/auth_repo.dart';
 import 'package:hungry_app/features/auth/view/login_view.dart';
 import 'package:hungry_app/features/auth/widgets/custom_button.dart';
+import 'package:hungry_app/root.dart';
 import 'package:hungry_app/shared/custom_text.dart';
 import 'package:hungry_app/shared/custom_text_field.dart';
 
@@ -15,14 +19,51 @@ class SignupView extends StatefulWidget {
 }
 
 class _SignupViewState extends State<SignupView> {
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  AuthRepo authRepo = AuthRepo();
+  bool isLoading = false;
+
+  Future<void> register() async {
+    setState(() => isLoading = true);
+    try {
+      final user = await authRepo.register(
+        usernameController.text.trim(),
+        emailController.text.trim(),
+        passwordController.text.trim(),
+        confirmPasswordController.text.trim(),
+      );
+
+      if (user != null) {
+        setState(() => isLoading = false);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (c) => RootView()),
+        );
+      }
+    } catch (e) {
+      setState(() => isLoading = false);
+
+      String errorMessage = "An error occurred in login view";
+      if (e is ApiError) {
+        errorMessage = e.message;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red.shade900,
+          content: CustomText(text: errorMessage),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController usernameController = TextEditingController();
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    TextEditingController confirmPasswordController = TextEditingController();
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -81,22 +122,24 @@ class _SignupViewState extends State<SignupView> {
                             controller: confirmPasswordController,
                           ),
                           Gap(30),
-                          CustomAuthButton(
-                            text: "Sign Up",
-                            color: AppColors.primary,
-                            textColor: Colors.white,
-                            onTap: () {
-                              if (formKey.currentState!.validate()) {
-                                print("sign up success");
-                              }
-                            },
-                          ),
+                          isLoading
+                              ? CupertinoActivityIndicator(color: Colors.white)
+                              : CustomAuthButton(
+                                  text: "Sign Up",
+                                  color: AppColors.primary,
+                                  textColor: Colors.white,
+                                  onTap: () {
+                                    if (formKey.currentState!.validate()) {
+                                      register();
+                                    }
+                                  },
+                                ),
                           Gap(10),
                           CustomAuthButton(
                             text: "Go to Login?",
 
                             onTap: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(builder: (c) => LoginView()),
                               );

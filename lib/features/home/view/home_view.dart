@@ -134,7 +134,7 @@ class _HomeViewState extends State<HomeView> {
                       childCount: items.length,
                       (context, index) {
                         return GestureDetector(
-                          onTap: () => Navigator.push(
+                          onTap: () => Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (c) => ProductView()),
                           ),

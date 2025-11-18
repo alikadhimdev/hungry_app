@@ -39,7 +39,7 @@ class _ProfileViewState extends State<ProfileView> {
         appBar: AppBar(
           backgroundColor: AppColors.primary,
           leading: GestureDetector(
-            onTap: () => Navigator.push(
+            onTap: () => Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (c) => RootView()),
             ),
@@ -134,7 +134,7 @@ class _ProfileViewState extends State<ProfileView> {
               ),
 
               GestureDetector(
-                onTap: () => Navigator.push(
+                onTap: () => Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (c) => LoginView()),
                 ),

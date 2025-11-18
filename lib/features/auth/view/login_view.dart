@@ -40,7 +40,7 @@ class _LoginViewState extends State<LoginView> {
         if (user != null) {
           setState(() => isLoading = false);
 
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (c) => RootView()),
           );
@@ -127,7 +127,7 @@ class _LoginViewState extends State<LoginView> {
                             color: Colors.white,
                             textColor: AppColors.primary,
                             onTap: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(builder: (c) => SignupView()),
                               );
@@ -135,7 +135,7 @@ class _LoginViewState extends State<LoginView> {
                           ),
                           Gap(20),
                           GestureDetector(
-                            onTap: () => Navigator.push(
+                            onTap: () => Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (c) => RootView()),
                             ),
