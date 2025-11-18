@@ -3,6 +3,20 @@ import 'package:hungry_app/core/network/api_error.dart';
 
 class ApiExceptions {
   static ApiError handleApiError(DioException error) {
+    final statusCode = error.response?.data["error"]["statusCode"];
+
+    final data = error.response?.data;
+    if (data is Map<String, dynamic>) {
+      // التحقق من وجود رسالة عربية
+      if (data["error"] != null && data["error"]["isArabic"] == true && data["error"]["arabicMessage"] != null) {
+        return ApiError(message: data["error"]["arabicMessage"], statusCode: statusCode);
+      }
+      // التحقق من وجود رسالة عامة
+      else if (data["message"] != null) {
+        return ApiError(message: data["message"], statusCode: statusCode);
+      }
+    }
+
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.receiveTimeout:

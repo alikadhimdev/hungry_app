@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:hungry_app/core/constants/app_colors.dart';
-import 'root.dart';
+import 'package:hungry_app/features/auth/view/signup_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -46,7 +46,7 @@ class _SplashViewState extends State<SplashView>
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (c) => const RootView()),
+        MaterialPageRoute(builder: (c) => const SignupView()),
       );
     });
   }

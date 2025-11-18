@@ -1,21 +1,65 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:hungry_app/core/constants/app_colors.dart';
+import 'package:hungry_app/core/network/api_error.dart';
+import 'package:hungry_app/features/auth/data/auth_repo.dart';
 import 'package:hungry_app/features/auth/view/signup_view.dart';
 import 'package:hungry_app/features/auth/widgets/custom_button.dart';
 import 'package:hungry_app/root.dart';
 import 'package:hungry_app/shared/custom_text.dart';
 import 'package:hungry_app/shared/custom_text_field.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    AuthRepo authRepo = AuthRepo();
+
+    bool isLoading = false;
+
+    Future<void> login() async {
+      setState(() => isLoading = true);
+      try {
+        final user = await authRepo.login(
+          emailController.text.trim(),
+          passwordController.text.trim(),
+        );
+
+        if (user != null) {
+          setState(() => isLoading = false);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (c) => RootView()),
+          );
+        }
+      } catch (e) {
+        setState(() => isLoading = false);
+
+        String errorMessage = "An error occurred in login view";
+        if (e is ApiError) {
+          errorMessage = e.message;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red.shade800,
+            content: Text(errorMessage),
+          ),
+        );
+      }
+    }
 
     return GestureDetector(
       // to hide the keyboard when click out the text field
@@ -65,16 +109,18 @@ class LoginView extends StatelessWidget {
                             controller: passwordController,
                           ),
                           Gap(40),
-                          CustomAuthButton(
-                            text: "Sign In",
-                            color: AppColors.primary,
-                            textColor: Colors.white,
-                            onTap: () {
-                              if (formKey.currentState!.validate()) {
-                                print("sign in success");
-                              }
-                            },
-                          ),
+                          isLoading
+                              ? CupertinoActivityIndicator(color: Colors.white)
+                              : CustomAuthButton(
+                                  text: "Sign In",
+                                  color: AppColors.primary,
+                                  textColor: Colors.white,
+                                  onTap: () {
+                                    if (formKey.currentState!.validate()) {
+                                      login();
+                                    }
+                                  },
+                                ),
                           Gap(10),
                           CustomAuthButton(
                             text: "Create An Account!",
