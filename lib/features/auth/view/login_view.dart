@@ -4,10 +4,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:hungry_app/core/constants/app_colors.dart';
 import 'package:hungry_app/core/network/api_error.dart';
+import 'package:hungry_app/core/utils/pref_helper.dart';
 import 'package:hungry_app/features/auth/data/auth_repo.dart';
 import 'package:hungry_app/features/auth/view/signup_view.dart';
 import 'package:hungry_app/features/auth/widgets/custom_button.dart';
 import 'package:hungry_app/root.dart';
+import 'package:hungry_app/shared/custom_snack.dart';
 import 'package:hungry_app/shared/custom_text.dart';
 import 'package:hungry_app/shared/custom_text_field.dart';
 
@@ -19,48 +21,51 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  @override
-  Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  AuthRepo authRepo = AuthRepo();
+  bool isLoading = false;
 
-    AuthRepo authRepo = AuthRepo();
+  Future<void> login() async {
+    setState(() => isLoading = true);
+    try {
+      final user = await authRepo.login(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
 
-    bool isLoading = false;
-
-    Future<void> login() async {
-      setState(() => isLoading = true);
-      try {
-        final user = await authRepo.login(
-          emailController.text.trim(),
-          passwordController.text.trim(),
-        );
-
-        if (user != null) {
-          setState(() => isLoading = false);
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (c) => RootView()),
-          );
-        }
-      } catch (e) {
+      if (user != null) {
         setState(() => isLoading = false);
-
-        String errorMessage = "An error occurred in login view";
-        if (e is ApiError) {
-          errorMessage = e.message;
+        if (user.token != null) {
+          await PrefHelper.saveToken(user.token!);
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red.shade800,
-            content: Text(errorMessage),
-          ),
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (c) => RootView()),
         );
       }
-    }
+    } catch (e) {
+      setState(() => isLoading = false);
 
+      String errorMessage = "An error occurred in login view";
+      if (e is ApiError) {
+        errorMessage = e.message;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(customSnack(errorMessage));
+    }
+  }
+
+  @override
+  void initState() {
+    emailController.text = "ali8@email.com";
+    passwordController.text = "Aa11112222";
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       // to hide the keyboard when click out the text field
       onTap: () => FocusScope.of(context).unfocus(),
