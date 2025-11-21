@@ -7,6 +7,8 @@ import 'package:hungry_app/features/auth/data/user_model.dart';
 
 class AuthRepo {
   ApiService apiService = ApiService();
+  bool isGest = false;
+  UserModel? _currentUser;
 
   // login
   Future<UserModel?> login(String email, String password) async {
@@ -31,6 +33,8 @@ class AuthRepo {
         if (user.token != null || user.token != "") {
           await PrefHelper.saveToken(user.token!);
         }
+        isGest = false;
+        _currentUser = user;
         return user;
       } else {
         throw ApiError(message: "Something went wrong");
@@ -66,7 +70,8 @@ class AuthRepo {
       if (user.token != null || user.token != "") {
         await PrefHelper.saveToken(user.token!);
       }
-
+      isGest = false;
+      _currentUser = user;
       return user;
     } catch (e) {
       throw ApiError(message: e.toString());
@@ -77,8 +82,14 @@ class AuthRepo {
 
   Future<UserModel?> profile() async {
     try {
+      final token = await PrefHelper.getToken();
+      if (token == null || token == "gest") {
+        return null;
+      }
       final response = await apiService.get("/auth/profile");
-      return UserModel.fromJson(response["data"]);
+      final user = UserModel.fromJson(response["data"]);
+      _currentUser = user;
+      return user;
     } on DioException catch (e) {
       throw ApiExceptions.handleApiError(e);
     } catch (e) {
@@ -87,15 +98,15 @@ class AuthRepo {
   }
 
   Future<UserModel?> updateProfile(
-    String name,
+    String username,
     String email,
     String card,
     String address,
-    String image,
+    String? image,
   ) async {
     try {
       final formDate = FormData.fromMap({
-        "name": name,
+        "name": username,
         "email": email,
         "visa": card,
         "address": address,
@@ -107,17 +118,63 @@ class AuthRepo {
       });
       final response = await apiService.put("/auth/update", formDate);
       if (response["status"] == "success") {
-        return UserModel.fromJson(response["data"]);
+        final updateUser = UserModel.fromJson(response["data"]);
+        _currentUser = updateUser;
+        return updateUser;
       } else if (response["status"] == "fail") {
         final msg = response["error"]["isArabic"] == true
             ? response["error"]["arabicMessage"]
             : response["error"]["message"];
         throw ApiError(message: msg);
       }
+      return null;
     } on DioException catch (e) {
       throw ApiExceptions.handleApiError(e);
     } catch (e) {
       throw ApiError(message: e.toString());
     }
   }
+
+  Future<void> logout() async {
+    try {
+      await apiService.get("/auth/logout");
+      await PrefHelper.clearToken();
+      _currentUser = null;
+      isGest = true;
+    } on DioException catch (e) {
+      throw ApiExceptions.handleApiError(e);
+    } catch (e) {
+      throw ApiError(message: e.toString());
+    }
+  }
+
+  Future<void> continueGest() async {
+    isGest = true;
+    _currentUser = null;
+    await PrefHelper.saveToken("gest");
+  }
+
+  Future<UserModel?> autoLogin() async {
+    final token = await PrefHelper.getToken();
+
+    if (token == null || token == "gest") {
+      isGest = true;
+      _currentUser = null;
+      return null;
+    }
+    isGest = false;
+    try {
+      final user = await profile();
+      _currentUser = user;
+      return user;
+    } catch (e) {
+      await PrefHelper.clearToken();
+      isGest = true;
+      _currentUser = null;
+      return null;
+    }
+  }
+
+  UserModel? get currentUser => _currentUser;
+  bool get isLoggedIn => !isGest && _currentUser != null;
 }

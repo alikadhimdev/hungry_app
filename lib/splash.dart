@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:hungry_app/core/constants/app_colors.dart';
+import 'package:hungry_app/features/auth/data/auth_repo.dart';
 import 'package:hungry_app/features/auth/view/signup_view.dart';
+
+import 'root.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -16,6 +19,29 @@ class _SplashViewState extends State<SplashView>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+
+  AuthRepo authRepo = AuthRepo();
+
+  Future<void> _checkLogin() async {
+    await authRepo.autoLogin();
+    if (!mounted) return;
+    if (authRepo.isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (c) => RootView()),
+      );
+    } else if (authRepo.isGest) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (c) => RootView()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (c) => SignupView()),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -43,12 +69,7 @@ class _SplashViewState extends State<SplashView>
     _controller.forward();
 
     // Navigate after animation finishes
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (c) => const SignupView()),
-      );
-    });
+    Future.delayed(const Duration(seconds: 3), _checkLogin);
   }
 
   @override

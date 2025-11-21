@@ -7,6 +7,7 @@ import 'package:hungry_app/core/constants/app_colors.dart';
 import 'package:hungry_app/core/network/api_error.dart';
 import 'package:hungry_app/features/auth/data/auth_repo.dart';
 import 'package:hungry_app/features/auth/data/user_model.dart';
+import 'package:hungry_app/features/auth/view/login_view.dart';
 import 'package:hungry_app/features/auth/widgets/custom_profile_field.dart';
 import 'package:hungry_app/shared/Custom_bottom.dart';
 import 'package:hungry_app/shared/custom_snack.dart';
@@ -58,22 +59,44 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future<void> _updateProfile() async {
     try {
+      setState(() => isLoading = true);
       final user = await authRepo.updateProfile(
-        _name.text,
-        _email.text,
-        _visa.text,
-        _address.text,
+        _name.text.trim(),
+        _email.text.trim(),
+        _visa.text.trim(),
+        _address.text.trim(),
         selectedImage ?? "",
       );
 
       if (user != null) {
         setState(() => userModel = user);
       }
+      setState(() => isLoading = false);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(customSnack("Profile Updated", color: AppColors.primary));
     } catch (e) {
+      setState(() => isLoading = false);
       String errMsg = "Failed to update profile";
+      if (e is ApiError) {
+        errMsg = e.message;
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(customSnack(errMsg));
+      }
+    }
+  }
+
+  Future<void> _logout() async {
+    try {
+      await authRepo.logout();
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (c) => LoginView()),
+      );
+    } catch (e) {
+      String errMsg = "Failed to logout";
       if (e is ApiError) {
         errMsg = e.message;
       }
@@ -235,12 +258,14 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                     child: Row(
                       children: [
-                        CustomText(
-                          text: "Update",
-                          color: Colors.white,
-                          weight: FontWeight.bold,
-                          size: 16,
-                        ),
+                        isLoading
+                            ? CupertinoActivityIndicator(color: Colors.white)
+                            : CustomText(
+                                text: "Update",
+                                color: Colors.white,
+                                weight: FontWeight.bold,
+                                size: 16,
+                              ),
                         Gap(30),
                         Icon(CupertinoIcons.pencil, color: Colors.white),
                       ],
@@ -249,11 +274,7 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
 
                 GestureDetector(
-                  onTap: () {},
-                  // onTap: () => Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(builder: (c) => LoginView()),
-                  // ),
+                  onTap: _logout,
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     decoration: BoxDecoration(
