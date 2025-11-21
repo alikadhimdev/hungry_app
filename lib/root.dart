@@ -50,10 +50,13 @@ class _RootViewState extends State<RootView> {
 
       bottomNavigationBar: Container(
         padding: EdgeInsets.symmetric(vertical: 10),
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+
         decoration: BoxDecoration(
           color: AppColors.primary,
-          borderRadius: BorderRadius.all(Radius.circular(50)),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
         ),
         child: BottomNavigationBar(
           elevation: 0,
@@ -64,7 +67,7 @@ class _RootViewState extends State<RootView> {
           unselectedItemColor: Colors.grey.shade400,
           unselectedFontSize: 12,
           showSelectedLabels: true,
-          // showUnselectedLabels: false,
+          showUnselectedLabels: false,
           currentIndex: currentScreen,
           onTap: (value) {
             setState(() => currentScreen = value);
