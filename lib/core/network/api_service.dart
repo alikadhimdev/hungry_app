@@ -10,7 +10,7 @@ class ApiService {
       final response = await _dioClient.dio.get(endPoint);
       return response.data;
     } on DioException catch (e) {
-      return ApiExceptions.handleApiError(e);
+      throw ApiExceptions.handleApiError(e);
     }
   }
 
@@ -19,16 +19,16 @@ class ApiService {
       final response = await _dioClient.dio.post(endPoint, data: body);
       return response.data;
     } on DioException catch (e) {
-      return ApiExceptions.handleApiError(e);
+      throw ApiExceptions.handleApiError(e);
     }
   }
 
-  Future<dynamic> put(String endPoint, Map<String, dynamic> body) async {
+  Future<dynamic> put(String endPoint, dynamic body) async {
     try {
       final response = await _dioClient.dio.put(endPoint, data: body);
       return response.data;
     } on DioException catch (e) {
-      return ApiExceptions.handleApiError(e);
+      throw ApiExceptions.handleApiError(e);
     }
   }
 
@@ -37,7 +37,7 @@ class ApiService {
       final response = await _dioClient.dio.delete(endPoint);
       return response.data;
     } on DioException catch (e) {
-      return ApiExceptions.handleApiError(e);
+      throw ApiExceptions.handleApiError(e);
     }
   }
 }

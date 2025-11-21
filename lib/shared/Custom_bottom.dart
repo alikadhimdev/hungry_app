@@ -14,6 +14,8 @@ class CustomBottom extends StatelessWidget {
     this.width,
     this.color,
     this.height,
+    this.textColor,
+    this.radius,
   });
   final String text;
   final Function()? onTap;
@@ -23,6 +25,8 @@ class CustomBottom extends StatelessWidget {
   final double? width;
   final Color? color;
   final double? height;
+  final Color? textColor;
+  final double? radius;
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +41,12 @@ class CustomBottom extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: color ?? AppColors.primary,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(radius ?? 15),
         ),
         child: Center(
           child: CustomText(
             text: text,
-            color: Colors.white,
+            color: textColor ?? Colors.white,
             size: 16,
             weight: weight ?? FontWeight.w500,
           ),

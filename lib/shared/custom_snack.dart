@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hungry_app/shared/custom_text.dart';
 
-SnackBar customSnack(String message) {
+SnackBar customSnack(String message, {Color? color}) {
   return SnackBar(
-    backgroundColor: Colors.red.shade800,
-    content: CustomText(text: message),
+    backgroundColor: color ?? Colors.red.shade800,
+    content: CustomText(text: message, lines: 5),
   );
 }

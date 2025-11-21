@@ -85,4 +85,39 @@ class AuthRepo {
       throw ApiError(message: e.toString());
     }
   }
+
+  Future<UserModel?> updateProfile(
+    String name,
+    String email,
+    String card,
+    String address,
+    String image,
+  ) async {
+    try {
+      final formDate = FormData.fromMap({
+        "name": name,
+        "email": email,
+        "visa": card,
+        "address": address,
+        if (image != null && image.isNotEmpty)
+          "image": await MultipartFile.fromFile(
+            image,
+            filename: image.split("/").last,
+          ),
+      });
+      final response = await apiService.put("/auth/update", formDate);
+      if (response["status"] == "success") {
+        return UserModel.fromJson(response["data"]);
+      } else if (response["status"] == "fail") {
+        final msg = response["error"]["isArabic"] == true
+            ? response["error"]["arabicMessage"]
+            : response["error"]["message"];
+        throw ApiError(message: msg);
+      }
+    } on DioException catch (e) {
+      throw ApiExceptions.handleApiError(e);
+    } catch (e) {
+      throw ApiError(message: e.toString());
+    }
+  }
 }

@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class CustomProfileField extends StatefulWidget {
   const CustomProfileField({
     super.key,
-    required this.hint,
+    this.hint,
     required this.controller,
+    this.type,
   });
-  final String hint;
+  final String? hint;
   final TextEditingController controller;
+  final TextInputType? type;
 
   @override
   State<CustomProfileField> createState() => _CustomProfileFieldState();
@@ -28,7 +30,10 @@ class _CustomProfileFieldState extends State<CustomProfileField> {
       cursorHeight: 20,
       controller: _controller,
       style: TextStyle(color: Colors.white),
+      keyboardType: widget.type,
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 15),
+
         labelText: widget.hint,
         labelStyle: TextStyle(color: Colors.grey.shade400),
 

@@ -28,11 +28,11 @@ class UserModel {
       name: json["name"] ?? "Unknown name",
       email: json["email"] ?? "Unknown email",
       password: json["password"] ?? "Unknown password",
-      image: json["image"] ?? "Unknown image",
+      image: json["image"],
       token: json["accessToken"] ?? "Unknown token",
       confirmPassword: json["confirmPassword"] ?? "Unknown confirmPassword",
       phone: json["phone"] ?? "Unknown phone",
-      visa: json["visa"] ?? "Unknown visa",
+      visa: json["visa"],
       address: json["address"] ?? "Unknown address",
       isAdmin: json["isAdmin"] ?? false,
     );
