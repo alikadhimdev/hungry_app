@@ -13,7 +13,8 @@ class OrderDetails extends StatelessWidget {
     required this.totalPrice,
   });
 
-  final double orderPrice, taxesPrice, deliveryPrice, totalPrice;
+  final double taxesPrice, deliveryPrice, totalPrice, orderPrice;
+
   final String time;
 
   @override

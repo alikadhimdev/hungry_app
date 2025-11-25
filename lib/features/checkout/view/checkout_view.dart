@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:hungry_app/features/cart/data/cart_repo.dart';
 import 'package:hungry_app/features/checkout/widgets/success_widget.dart';
+import 'package:hungry_app/features/order_history/data/order_model.dart';
+import 'package:hungry_app/features/order_history/data/order_repo.dart';
+import 'package:hungry_app/root.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/network/api_error.dart';
 import "../../../shared/Custom_bottom.dart";
+import '../../../shared/custom_snack.dart';
 import '../../../shared/custom_text.dart';
+import '../../cart/data/cart_model.dart';
 import '../widgets/order_details.dart';
 
 class CheckoutView extends StatefulWidget {
-  const CheckoutView({super.key});
+  const CheckoutView({super.key, required this.orderPrice});
+  final int orderPrice;
 
   @override
   State<CheckoutView> createState() => _CheckoutViewState();
@@ -17,12 +25,73 @@ class CheckoutView extends StatefulWidget {
 class _CheckoutViewState extends State<CheckoutView> {
   String? _paymentMethod = "cash";
   bool _saveCardInfo = false;
-  double _totalPrice = 19.23;
+  double _orderPrice = 19.23;
+  final double _fee = 0.3;
+  final double _delivery = 1.5;
+  double get _totalPrice => _orderPrice + _fee + _delivery;
+
+  CartRepo cartRepo = CartRepo();
+  OrderRepo orderRepo = OrderRepo();
+  List<CartItemModel>? items = [];
+  String totalPrice = "";
+
+  Future<void> getCart() async {
+    try {
+      final cart = await cartRepo.getCart();
+      if (cart == null) return;
+
+      setState(() {
+        items = cart.items;
+        _orderPrice = double.parse(cart.totalPrice);
+      });
+    } catch (e) {
+      String errMsg = "fail to get Cart";
+      if (e is ApiError) {
+        errMsg = e.message;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(customSnack(errMsg));
+    }
+  }
+
+  Future<void> addOrder() async {
+    try {
+      Map<String, dynamic> body = {
+        "paymentMethod": _paymentMethod,
+        "deliveryAddress": {"street": "my street", "city": "basra"},
+        "notes": "this is my not",
+        "items": items?.map((e) => e.toJson()).toList(),
+      };
+
+      final response = await orderRepo.addOrder(body);
+
+      showDialog(context: context, builder: (context) => SuccessWidget());
+    } catch (e) {
+      String errMsg = "fail to add order";
+      if (e is ApiError) {
+        errMsg = e.message;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(customSnack(errMsg));
+    }
+  }
+
+  @override
+  void initState() {
+    getCart();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (c) => RootView()),
+          ),
+          child: Icon(Icons.arrow_back),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -30,9 +99,9 @@ class _CheckoutViewState extends State<CheckoutView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               OrderDetails(
-                orderPrice: 16.48,
-                taxesPrice: 0.3,
-                deliveryPrice: 1.5,
+                orderPrice: _orderPrice,
+                taxesPrice: _fee,
+                deliveryPrice: _delivery,
                 totalPrice: _totalPrice,
                 time: "3 - 5 Minutes",
               ),
@@ -153,7 +222,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                   },
                 );
               },
-              child: CustomBottom(text: "Pay Now", height: 50),
+              child: CustomBottom(onTap: addOrder, text: "Pay Now", height: 50),
             ),
           ],
         ),

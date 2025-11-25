@@ -10,7 +10,7 @@ class CartItem extends StatefulWidget {
     required this.title,
     required this.des,
     required this.rate,
-    required this.imgUrl,
+    this.imgUrl,
     this.onFavorite,
     required this.isLike,
   });
@@ -18,7 +18,7 @@ class CartItem extends StatefulWidget {
   final String title;
   final String des;
   final String rate;
-  final String imgUrl;
+  final String? imgUrl;
   final Function()? onFavorite;
   final bool isLike;
 
@@ -37,7 +37,22 @@ class _CartItemState extends State<CartItem> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: Image.asset(widget.imgUrl, width: 120, height: 110)),
+            Container(
+              height: 110,
+              color: Colors.red,
+              child: Center(
+                child: Image.network(
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  widget.imgUrl ?? "",
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.warning_rounded,
+                    size: 50,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
             Gap(2),
             CustomText(text: widget.title, weight: FontWeight.bold, size: 12),
             Gap(2),

@@ -1,32 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hungry_app/core/network/api_error.dart';
+import 'package:hungry_app/features/home/data/product_model.dart';
+import 'package:hungry_app/features/home/data/products_repo.dart';
+import 'package:hungry_app/shared/custom_snack.dart';
 
 import '../../product/view/product_view.dart';
 import '../widgets/cart_item.dart';
 import '../widgets/category_item.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/user_header.dart';
-
-class Item {
-  int id;
-  String title, des, rate, imgUrl;
-  Item({
-    required this.id,
-    required this.title,
-    required this.des,
-    required this.rate,
-    required this.imgUrl,
-  });
-
-  factory Item.fromMap(Map<String, dynamic> map) {
-    return Item(
-      id: map["id"],
-      title: map["title"],
-      des: map["des"],
-      rate: map["rate"],
-      imgUrl: map["imgUrl"],
-    );
-  }
-}
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -39,54 +21,10 @@ class _HomeViewState extends State<HomeView> {
   List<String> categories = ["All", "Combos", "Sliders", "Classic", "Modern"];
   int _selectedCategory = 0;
 
-  List<Item> items = [
-    Item(
-      id: 1,
-      title: "Cheeseburger",
-      des: "Wendy's Burger",
-      rate: "4.9",
-      imgUrl: "assets/test/test.png",
-    ),
-    Item(
-      id: 2,
-      title: "Hamburger",
-      des: "Veggie Burger",
-      rate: "4.5",
-      imgUrl: "assets/test/test1.png",
-    ),
-    Item(
-      id: 3,
-      title: "Cheeseburger",
-      des: "Chicken Burger",
-      rate: "4.7",
-      imgUrl: "assets/test/test1.png",
-    ),
-    Item(
-      id: 4,
-      title: "Hamburger",
-      des: "Fried Chicken Burger",
-      rate: "4.0",
-      imgUrl: "assets/test/test.png",
-    ),
-    Item(
-      id: 5,
-      title: "Cheeseburger",
-      des: "Wendy's Burger",
-      rate: "4.9",
-      imgUrl: "assets/test/test.png",
-    ),
-    Item(
-      id: 6,
-      title: "Cheeseburger",
-      des: "Wendy's Burger",
-      rate: "4.9",
-      imgUrl: "assets/test/test.png",
-    ),
-  ];
+  List<ProductModel>? items;
+  Set<String> favoriteItems = {};
 
-  Set<int> favoriteItems = {};
-
-  void toggleFavorite(int itemId) {
+  void toggleFavorite(String itemId) {
     setState(() {
       if (favoriteItems.contains(itemId)) {
         favoriteItems.remove(itemId);
@@ -94,6 +32,27 @@ class _HomeViewState extends State<HomeView> {
         favoriteItems.add(itemId);
       }
     });
+  }
+
+  ProductsRepo productsRepo = ProductsRepo();
+
+  Future<void> getProducts() async {
+    try {
+      final products = await productsRepo.getProducts();
+      setState(() => items = products);
+    } catch (e) {
+      String errMsg = "fail to get products";
+      if (e is ApiError) {
+        errMsg = e.message;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(customSnack(errMsg));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getProducts();
   }
 
   @override
@@ -131,21 +90,25 @@ class _HomeViewState extends State<HomeView> {
 
                   sliver: SliverGrid(
                     delegate: SliverChildBuilderDelegate(
-                      childCount: items.length,
+                      childCount: items?.length,
                       (context, index) {
+                        if (items == null) return Container();
+                        final item = items![index];
                         return GestureDetector(
                           onTap: () => Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (c) => ProductView()),
+                            MaterialPageRoute(
+                              builder: (c) => ProductView(id: item.id),
+                            ),
                           ),
                           child: CartItem(
-                            title: items[index].title,
-                            des: items[index].des,
-                            rate: items[index].rate,
-                            imgUrl: items[index].imgUrl,
-                            isLike: favoriteItems.contains(items[index].id),
+                            title: item.name,
+                            des: item.des,
+                            rate: item.rate.toString(),
+                            imgUrl: item.image,
+                            isLike: favoriteItems.contains(item.id),
                             onFavorite: () {
-                              toggleFavorite(items[index].id);
+                              toggleFavorite(item.id);
                             },
                           ),
                         );

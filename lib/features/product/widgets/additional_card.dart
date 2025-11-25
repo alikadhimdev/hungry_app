@@ -1,84 +1,79 @@
 import 'package:flutter/material.dart';
-
+import 'package:hungry_app/core/constants/app_colors.dart';
 import '../../../shared/custom_text.dart';
-import '../view/product_view.dart';
 
 class AdditionalCard extends StatelessWidget {
-  const AdditionalCard({super.key, required this.adds});
-  final List<ProductAdds> adds;
+  const AdditionalCard({
+    super.key,
+    required this.image,
+    required this.name,
+
+    this.onTap,
+    required this.isSelected,
+  });
+  final String image;
+  final String name;
+  final bool isSelected;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      clipBehavior: Clip.none,
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: List.generate(adds.length, (index) {
-          return Card(
-            color: Color(0xff3C2F2F),
-            elevation: 15,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(21),
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        color: isSelected ? AppColors.primary : Color(0xff3C2F2F),
+        elevation: 15,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(21)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 100,
+              height: 60,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Image.network(
+                  image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Icon(Icons.warning_rounded, size: 30),
+                ),
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 120,
-                  height: 80,
-                  decoration: BoxDecoration(
+
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomText(
+                    text: name,
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    size: 12,
+                    weight: FontWeight.w400,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Image.asset(adds[index].img),
-                  ),
-                ),
 
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 15,
-                  ),
-                  child: SizedBox(
-                    width: 90,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomText(
-                          text: adds[index].title,
-                          color: Colors.white,
-                          size: 14,
-                          weight: FontWeight.w400,
-                        ),
-                        Spacer(),
-                        Container(
-                          width: 20,
-                          height: 20,
-                          decoration: BoxDecoration(
-                            color: Colors.redAccent,
-                            shape: BoxShape.circle,
-                          ),
-
-                          child: Center(
-                            child: CustomText(
-                              text: "+",
-                              color: Colors.white,
-                              size: 14,
-                              weight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
+                  Container(
+                    width: 15,
+                    height: 15,
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.green : Colors.redAccent,
+                      shape: BoxShape.circle,
                     ),
+
+                    child: isSelected
+                        ? Icon(Icons.check, size: 12, color: Colors.white)
+                        : Icon(Icons.add, size: 12, color: Colors.white),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          );
-        }),
+          ],
+        ),
       ),
     );
   }

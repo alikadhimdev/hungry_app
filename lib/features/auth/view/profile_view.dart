@@ -129,7 +129,7 @@ class _ProfileViewState extends State<ProfileView> {
   void initState() {
     super.initState();
     _autoLogin();
-    // _getProfile();
+    _getProfile();
   }
 
   @override
